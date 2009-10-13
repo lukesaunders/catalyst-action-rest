@@ -4,11 +4,13 @@ use Test::More tests => 28;
 use FindBin;
 use lib ( "$FindBin::Bin/../lib", "$FindBin::Bin/../t/lib" );
 
-use Catalyst::Request::REST;
+use Catalyst::Request;
+use Catalyst::RequestRole::REST; 
 use HTTP::Headers;
 
 {
-    my $request = Catalyst::Request::REST->new;
+    my $request = Catalyst::Request->new;
+    Catalyst::RequestRole::REST->meta->apply($request) ;
     $request->{_context} = 'MockContext';
     $request->headers( HTTP::Headers->new );
     $request->parameters( {} );
