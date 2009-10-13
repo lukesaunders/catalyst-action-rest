@@ -13,6 +13,12 @@ has accept_only => (
   default => 0,
 );
 
+has 'data' => (
+  is => 'rw',
+  isa => 'HashRef',
+  default => sub { {} },
+);
+
 has accepted_content_types => (
   is         => 'ro',
   isa        => 'ArrayRef',

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 28;
+use Test::More tests => 24;
 use FindBin;
 use lib ( "$FindBin::Bin/../lib", "$FindBin::Bin/../t/lib" );
 
@@ -27,7 +27,8 @@ use HTTP::Headers;
 }
 
 {
-    my $request = Catalyst::Request::REST->new;
+    my $request = Catalyst::Request->new;
+    Catalyst::RequestRole::REST->meta->apply($request) ;
     $request->{_context} = 'MockContext';
     $request->headers( HTTP::Headers->new );
     $request->parameters( { 'content-type' => 'text/fudge' } );
@@ -45,7 +46,8 @@ use HTTP::Headers;
 }
 
 {
-    my $request = Catalyst::Request::REST->new;
+    my $request = Catalyst::Request->new;
+    Catalyst::RequestRole::REST->meta->apply($request) ;
     $request->{_context} = 'MockContext';
     $request->headers( HTTP::Headers->new );
     $request->parameters( { 'content-type' => 'text/fudge' } );
@@ -56,7 +58,8 @@ use HTTP::Headers;
 }
 
 {
-    my $request = Catalyst::Request::REST->new;
+    my $request = Catalyst::Request->new;
+    Catalyst::RequestRole::REST->meta->apply($request) ;
     $request->{_context} = 'MockContext';
     $request->headers( HTTP::Headers->new );
     $request->parameters( {} );
@@ -83,8 +86,9 @@ use HTTP::Headers;
     ok( ! $request->accepts('image/svg'), 'does not accept image/svg' );
 }
 
-{
-    my $request = Catalyst::Request::REST->new;
+{ 
+    my $request = Catalyst::Request->new;
+    Catalyst::RequestRole::REST->meta->apply($request) ;
     $request->{_context} = 'MockContext';
     $request->headers( HTTP::Headers->new );
     $request->parameters( {} );
@@ -109,7 +113,8 @@ use HTTP::Headers;
 }
 
 {
-    my $request = Catalyst::Request::REST->new;
+    my $request = Catalyst::Request->new;
+    Catalyst::RequestRole::REST->meta->apply($request) ;
     $request->{_context} = 'MockContext';
     $request->headers( HTTP::Headers->new );
     $request->parameters( {} );
@@ -134,7 +139,8 @@ use HTTP::Headers;
 }
 
 {
-    my $request = Catalyst::Request::REST->new;
+    my $request = Catalyst::Request->new;
+    Catalyst::RequestRole::REST->meta->apply($request) ;
     $request->{_context} = 'MockContext';
     $request->headers( HTTP::Headers->new );
     $request->parameters( {} );
@@ -152,7 +158,8 @@ use HTTP::Headers;
 }
 
 {
-    my $request = Catalyst::Request::REST->new;
+    my $request = Catalyst::Request->new;
+    Catalyst::RequestRole::REST->meta->apply($request) ;
     $request->{_context} = 'MockContext';
     $request->headers( HTTP::Headers->new );
     $request->parameters( {} );
