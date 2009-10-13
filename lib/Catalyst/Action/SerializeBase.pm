@@ -9,20 +9,21 @@ package Catalyst::Action::SerializeBase;
 use strict;
 use warnings;
 
-use base 'Catalyst::Action';
+use Moose;
+extends 'Catalyst::Action';
+
 use Module::Pluggable::Object;
 use Data::Dump qw(dump);
-use Catalyst::Request::REST;
+use Catalyst::RequestRole::REST;
 use Catalyst::Utils ();
 
-sub new {
-  my $class  = shift;
-  my $config = shift;
-  Catalyst::Request::REST->_insert_self_into( $config->{class} );
-  return $class->SUPER::new($config, @_);
-}
-
 __PACKAGE__->mk_accessors(qw(_serialize_plugins _loaded_plugins));
+
+before 'dispatch' => sub {
+    my ($self, $c) = @_;
+
+    Catalyst::RequestRole::REST->meta->apply($c->request);
+};
 
 sub _load_content_plugins {
     my $self = shift;

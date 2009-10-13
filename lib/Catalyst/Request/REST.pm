@@ -10,24 +10,9 @@ package Catalyst::Request::REST;
 use strict;
 use warnings;
 
-use base qw/Catalyst::Request Class::Accessor::Fast/;
-
-use Catalyst::Utils;
-use HTTP::Headers::Util qw(split_header_words);
-
-sub _insert_self_into {
-  my ($class, $app_class ) = @_;
-  my $app = Catalyst::Utils::class2appclass( $app_class ) || $app_class;
-
-  my $req_class = $app->request_class;
-  return if $req_class->isa($class);
-  if ($req_class eq 'Catalyst::Request') {
-    $app->request_class($class);
-  } else {
-    die "$app has a custom request class $req_class, "
-      . "which is not a $class; see Catalyst::Request::REST";
-  }
-}
+use Moose;
+extends 'Catalyst::Request';
+with 'Catalyst::RequestRole::REST';
 
 =head1 NAME
 
@@ -92,74 +77,6 @@ relative quality specified for each type.
 
 If a type appears in more than one of these places, it is ordered based on
 where it is first found.
-
-=cut
-
-sub accepted_content_types {
-    my $self = shift;
-
-    return $self->{content_types} if $self->{content_types};
-
-    my %types;
-
-    # First, we use the content type in the HTTP Request.  It wins all.
-    $types{ $self->content_type } = 3
-        if $self->content_type;
-
-    if ($self->method eq "GET" && $self->param('content-type')) {
-        $types{ $self->param('content-type') } = 2;
-    }
-
-    # Third, we parse the Accept header, and see if the client
-    # takes a format we understand.
-    #
-    # This is taken from chansen's Apache2::UploadProgress.
-    if ( $self->header('Accept') ) {
-        $self->accept_only(1) unless keys %types;
-
-        my $accept_header = $self->header('Accept');
-        my $counter       = 0;
-
-        foreach my $pair ( split_header_words($accept_header) ) {
-            my ( $type, $qvalue ) = @{$pair}[ 0, 3 ];
-            next if $types{$type};
-
-            unless ( defined $qvalue ) {
-                $qvalue = 1 - ( ++$counter / 1000 );
-            }
-
-            $types{$type} = sprintf( '%.3f', $qvalue );
-        }
-    }
-
-    return $self->{content_types} =
-        [ sort { $types{$b} <=> $types{$a} } keys %types ];
-}
-
-=item preferred_content_type
-
-This returns the first content type found. It is shorthand for:
-
-  $request->accepted_content_types->[0]
-
-=cut
-
-sub preferred_content_type { $_[0]->accepted_content_types->[0] }
-
-=item accepts($type)
-
-Given a content type, this returns true if the type is accepted.
-
-Note that this does not do any wildcard expansion of types.
-
-=cut
-
-sub accepts {
-    my $self = shift;
-    my $type = shift;
-
-    return grep { $_ eq $type } @{ $self->accepted_content_types };
-}
 
 =back
 

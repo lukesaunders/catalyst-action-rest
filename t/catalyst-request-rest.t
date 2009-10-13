@@ -169,24 +169,23 @@ use HTTP::Headers;
                'each type appears only once' );
 }
 
-{
-  my $test = 'Test::Catalyst::Action::REST';
-  use_ok $test;
-  is($test->request_class, 'Catalyst::Request::REST',
-    'Request::REST took over for Request');
+# {
+#   my $test = 'Test::Catalyst::Action::REST';
+#   use_ok $test;
+#   ok( does_role($a->request, 'Catalyst::Request::REST::Role'), 'Request::REST took over for Request');
 
-  $test->request_class('Some::Other::Class');
-  eval { $test->setup };
-  like $@, qr/$test has a custom request class Some::Other::Class/;
+#   $test->request_class('Some::Other::Class');
+#   eval { $test->setup };
+#   like $@, qr/$test has a custom request class Some::Other::Class/;
 
-  {
-    package My::Request;
-    use base 'Catalyst::Request::REST';
-  }
-  $test->request_class('My::Request');
-  eval { $test->setup };
-  is $@, '', 'no error from Request::REST subclass';
-}
+#   {
+#     package My::Request;
+#     use base 'Catalyst::Request::REST';
+#   }
+#   $test->request_class('My::Request');
+#   eval { $test->setup };
+#   is $@, '', 'no error from Request::REST subclass';
+# }
 
 package MockContext;
 

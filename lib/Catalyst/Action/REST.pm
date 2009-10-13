@@ -10,22 +10,17 @@ package Catalyst::Action::REST;
 use strict;
 use warnings;
 
-use base 'Catalyst::Action';
+use Moose;
+extends 'Catalyst::Action';
 use Class::Inspector;
 use Catalyst;
-use Catalyst::Request::REST;
 use Catalyst::Controller::REST;
+use Catalyst::RequestRole::REST;
 
 BEGIN { require 5.008001; }
 
 our $VERSION = '0.67_01';
 
-sub new {
-  my $class  = shift;
-  my $config = shift;
-  Catalyst::Request::REST->_insert_self_into( $config->{class} );
-  return $class->SUPER::new($config, @_);
-}
 
 =head1 NAME
 
@@ -89,6 +84,7 @@ sub dispatch {
     my $self = shift;
     my $c    = shift;
 
+    Catalyst::RequestRole::REST->meta->apply($c->request);
     my $controller = $c->component( $self->class );
     my $method     = $self->name . "_" . uc( $c->request->method );
     if ( $controller->can($method) ) {

@@ -35,7 +35,7 @@ EOH
 
     };
 }
-
+exit;
 SKIP: {
     eval 'require JSON 2.12;';
     skip "can't test application/json without JSON support", 3 if $@;
