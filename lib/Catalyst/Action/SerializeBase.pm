@@ -16,13 +16,14 @@ use Module::Pluggable::Object;
 use Data::Dump qw(dump);
 use Catalyst::RequestRole::REST;
 use Catalyst::Utils ();
+use Moose::Util qw/does_role/;
 
 __PACKAGE__->mk_accessors(qw(_serialize_plugins _loaded_plugins));
 
 before 'dispatch' => sub {
     my ($self, $c) = @_;
 
-    Catalyst::RequestRole::REST->meta->apply($c->request);
+    Catalyst::RequestRole::REST->meta->apply($c->request) unless does_role($c->request, 'Catalyst::RequestRole::REST');
 };
 
 sub _load_content_plugins {

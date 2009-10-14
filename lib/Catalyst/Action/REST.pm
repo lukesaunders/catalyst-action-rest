@@ -16,6 +16,7 @@ use Class::Inspector;
 use Catalyst;
 use Catalyst::Controller::REST;
 use Catalyst::RequestRole::REST;
+use Moose::Util qw/does_role/;
 
 BEGIN { require 5.008001; }
 
@@ -84,7 +85,7 @@ sub dispatch {
     my $self = shift;
     my $c    = shift;
 
-    Catalyst::RequestRole::REST->meta->apply($c->request);
+    Catalyst::RequestRole::REST->meta->apply($c->request) unless does_role($c->request, 'Catalyst::RequestRole::REST');
     my $controller = $c->component( $self->class );
     my $method     = $self->name . "_" . uc( $c->request->method );
     if ( $controller->can($method) ) {
